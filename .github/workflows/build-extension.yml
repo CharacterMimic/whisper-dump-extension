@@ -1,0 +1,45 @@
+name: Build WhisperDump Extension
+
+on:
+  push:
+    branches: [ master ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          elif [ -f package.json ]; then
+            npm install
+          fi
+
+      - name: Zip Extension
+        run: |
+          zip -r whisperdump-extension.zip manifest.json background.js content.js sidepanel.html sidepanel.js sidepanel.css assets/ gifs/ README.md
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: whisperdump-extension
+          path: whisperdump-extension.zip
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: whisperdump-extension.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
