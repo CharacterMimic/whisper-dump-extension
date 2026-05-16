@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clawmander Snitch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Shrikhand&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Persistent Background Overlay -->
+        <div id="overlay-bg" class="hidden">
+            <video id="bg-video" autoplay loop muted></video>
+        </div>
+
+        <!-- Header -->
+        <header id="header">
+            <div class="header-left">
+                <div id="brain-icon">👁️‍🗨️</div>
+                <h1>Clawmander Snitch</h1>
+            </div>
+            <div class="header-right">
+                <button id="voice-toggle-btn" class="icon-btn" title="Toggle Voice (TTS)">🔊</button>
+                <button id="vision-btn" class="icon-btn" title="Take Screenshot (Vision)">📸</button>
+                <span id="ws-status" class="status-dot disconnected" title="Disconnected"></span>
+                <span id="ws-label">ANALOG STANDBY</span>
+            </div>
+        </header>
+
+        <!-- Messages / Chat Area -->
+        <section id="messages-area">
+            <div id="messages-list">
+                <div class="message system">
+                    <span class="msg-text">Clawmander Snitch Online. Surveillance Active.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Active Nudge Detail (shown when nudge arrives) -->
+        <section id="nudge-detail" class="hidden">
+            <div class="nudge-card">
+                <div class="nudge-header">
+                    <div class="nudge-visual-container">
+                        <img id="nudge-img" src="gifs/default.png" alt="nudge">
+                        <video id="nudge-video" autoplay loop muted class="hidden"></video>
+                    </div>
+                    <div class="nudge-meta">
+                        <span id="nudge-category-badge" class="badge">focus</span>
+                        <h3 id="nudge-detail-title">Nudge</h3>
+                    </div>
+                    <button id="nudge-dismiss" class="icon-btn" title="Dismiss">✕</button>
+                </div>
+                <p id="nudge-detail-message"></p>
+                <p id="nudge-detail-why" class="dim"></p>
+                <div class="nudge-action-row">
+                    <button id="nudge-act-btn" class="btn primary">Do it</button>
+                    <button id="nudge-snooze-btn" class="btn ghost">Snooze 15m</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Input Area -->
+        <section id="input-area">
+            <div class="mode-tabs">
+                <button class="mode-tab active" data-mode="command">💬 Command</button>
+                <button class="mode-tab" data-mode="braindump">🧠 Dump</button>
+                <button class="mode-tab" data-mode="reminder">⏰ Remind</button>
+                <button class="mode-tab" data-mode="compliance">🔍 Strategic</button>
+                <button class="mode-tab" data-mode="settings">⚙️ Settings</button>
+            </div>
+            <div id="mode-command" class="mode-panel active">
+                <textarea id="command-input" placeholder="Talk to Boss..."></textarea>
+                <button id="command-send" class="btn primary send-btn">Send</button>
+            </div>
+            <div id="mode-braindump" class="mode-panel">
+                <textarea id="dump-input" placeholder="Brain dump... just let it flow. Win+H to dictate."></textarea>
+                <button id="dump-send" class="btn primary send-btn">Dump It</button>
+            </div>
+            <div id="mode-reminder" class="mode-panel">
+                <textarea id="reminder-input" placeholder='e.g. "Remind me in 20 minutes to check the scanner"'></textarea>
+                <button id="reminder-send" class="btn primary send-btn">Set Reminder</button>
+            </div>
+            <div id="mode-compliance" class="mode-panel">
+                <div class="compliance-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <h3 style="margin:0; font-size:1rem;">Strategic Alignments</h3>
+                    <div class="action-buttons" style="display:flex; gap:8px;">
+                        <button id="deep-audit-btn" class="icon-btn" title="Run Deep Strategic Audit" style="background:var(--mustard-yellow); border-radius:4px; padding:4px 8px; font-family:'Bungee'; font-size:0.7rem; color:var(--brown-text);">RUN DEEP AUDIT</button>
+                        <button id="finalize-audit-btn" class="icon-btn" title="Generate Canonical Doc" style="background:var(--avo-green); border-radius:4px; padding:4px 8px; font-family:'Bungee'; font-size:0.7rem; color:white;">FINALIZE</button>
+                        <button id="deep-sync-btn" class="icon-btn" title="Deep Sync to DO Spaces" style="background:var(--burnt-orange); border-radius:4px; padding:4px 8px; font-family:'Bungee'; font-size:0.7rem; color:white;">DEEP SYNC</button>
+                        <button id="refresh-logs" class="icon-btn" title="Refresh Logs">🔄</button>
+                    </div>
+                </div>
+                
+                <div class="compliance-toggles" style="display:flex; gap:12px; margin-bottom:12px; background: rgba(0,0,0,0.05); padding: 8px; border: 1px solid var(--border-color); border-radius: 4px;">
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <input type="checkbox" id="realtime-record-toggle">
+                        <label for="realtime-record-toggle" style="font-size:0.7rem; font-weight:bold;">REC LIVE</label>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <input type="checkbox" id="hide-history-toggle">
+                        <label for="hide-history-toggle" style="font-size:0.7rem; font-weight:bold;">HIDE HISTORY</label>
+                    </div>
+                </div>
+
+                <div id="compliance-logs-list" class="logs-container" style="max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.05); padding: 8px; border: 2px solid var(--border-color);">
+                    <p class="dim">Select "Log" to fetch session history.</p>
+                </div>
+            </div>
+            <div id="mode-settings" class="mode-panel">
+                <div class="settings-group">
+                    <label>Companion Avatar / LoFi Background (GIF/MP4)</label>
+                    <input type="text" id="avatar-url-input" placeholder="URL to image, gif, or mp4...">
+                    <p class="dim">Direct links for persistent background effect.</p>
+                </div>
+                
+                <div class="settings-group" style="margin-top:12px;">
+                    <label>Voice Provider</label>
+                    <select id="voice-provider-select" style="width:100%; margin-top:4px;">
+                        <option value="browser">System (Standard)</option>
+                        <option value="elevenlabs">ElevenLabs (Premium)</option>
+                    </select>
+                </div>
+
+                <div id="elevenlabs-config" class="settings-group hidden" style="margin-top:12px;">
+                    <label>ElevenLabs API Key</label>
+                    <input type="password" id="eleven-api-key" placeholder="Enter API Key">
+                    <label style="margin-top:8px; display:block;">Voice ID</label>
+                    <input type="text" id="eleven-voice-id" placeholder="e.g. pNInz6obpg8ndOeDr7qn">
+                </div>
+
+                <div id="browser-voice-config" class="settings-group" style="margin-top:12px;">
+                    <label>System Voice</label>
+                    <select id="voice-select" style="width:100%; margin-top:4px;"></select>
+                </div>
+
+                <div class="settings-group" style="margin-top:12px; display:flex; align-items:center; gap:8px;">
+                    <input type="checkbox" id="lofi-mode-toggle">
+                    <label for="lofi-mode-toggle">Enable LoFi Desk Overlay</label>
+                </div>
+
+                <div class="settings-group" style="margin-top:12px; display:flex; align-items:center; gap:8px;">
+                    <input type="checkbox" id="drift-detection-toggle">
+                    <label for="drift-detection-toggle">Enable Real-time Strategic Audit</label>
+                </div>
+
+                <div id="cbh-config" class="settings-group" style="margin-top:12px;">
+                    <label>Core Build Handoff (CBH) Rules</label>
+                    <textarea id="cbh-context-input" placeholder="Define the hard rules for this project... (e.g. No external APIs, use FastAPI, etc.)" style="width:100%; height:80px; margin-top:4px; font-family:'Courier Prime', monospace; font-size:0.8rem;"></textarea>
+                    <p class="dim">These rules are used by the Auditor agent to flag conflicts.</p>
+                </div>
+
+                <button id="save-settings" class="btn primary" style="width:100%; margin-top:16px;">Save & Apply</button>
+            </div>
+        </section>
+    </div>
+    <script src="sidepanel.js"></script>
+</body>
+</html>
