@@ -288,6 +288,9 @@
   };
   container.appendChild(minimizeBtn);
 
+  const statusRing = document.createElement('div');
+  statusRing.className = 'status-ring';
+
   container.appendChild(statusRing);
   container.appendChild(bubble);
   shadow.appendChild(container);
