@@ -43,4 +43,4 @@ Edit the `OPENCLAW_WS` and `OPENCLAW_HTTP` constants in `sidepanel.js` to point 
 
 ---
 
-*Built with ❤️ for the AntiGravity Swarm.*
+*Built with ❤️ for the community*
